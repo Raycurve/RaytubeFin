@@ -74,6 +74,7 @@ export default function Login() {
             const res = await apiRequest.post("/auth/signin/",{name,password});
             console.log(res.data);
             
+            
         }
         catch(err){
             
