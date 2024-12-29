@@ -20,6 +20,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import '@fontsource/roboto/500.css';
+import { useSelector } from 'react-redux';
 
 
 const Container = styled.div `
@@ -94,7 +95,13 @@ const Title = styled.h2`
 `
 // console.log(${theme});
 export default function Menu({darkMode,setDarkMode}) {
-  
+
+  const currentUser = useSelector((store)=>store.user.currentUser);
+
+
+
+
+
   return (
     <Container>
       <Wrapper>
@@ -134,6 +141,9 @@ export default function Menu({darkMode,setDarkMode}) {
         </Item>
 
         <Hr/>
+
+        {!currentUser && 
+        <>
         <Login>
           Sign in to like videos comment and subscribe
           <Link to="login" style={{textDecoration:"none"}}>
@@ -143,6 +153,9 @@ export default function Menu({darkMode,setDarkMode}) {
         </Login>
 
         <Hr/>
+        </>
+        }
+
         <Title>
           BEST OF RAYTUBE
         </Title>
