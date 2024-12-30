@@ -48,3 +48,10 @@ export const signin = async(req,res,next)=>{
     }
     
 }
+
+export const logout = (req,res,next)=>{
+    res.clearCookie("access_token", {
+        httpOnly: true,
+      });
+      return res.status(200).json("Logged out successfully.");
+}

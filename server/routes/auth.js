@@ -1,9 +1,12 @@
 import express from 'express';
-import {signin, signup, test} from '../controllers/auth.js';
+import {logout, signin, signup, test} from '../controllers/auth.js';
+import { verifyToken } from '../verifyToken.js';
 
 const router = express.Router();
 
 router.get("/test", test);  
+
+router.post("/logout",verifyToken, logout);
 
 //create a user
 router.post("/signup", signup);

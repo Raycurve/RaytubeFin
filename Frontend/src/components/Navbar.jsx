@@ -5,8 +5,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import '@fontsource/roboto/500.css';
 import {Link} from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { current } from '@reduxjs/toolkit';
+import { logout } from '../redux/userSlice';
+import apiRequest from '../lib/apiRequest';
 
 
 const Container = styled.div`
@@ -40,17 +42,18 @@ const Search = styled.div`
   padding:5px;
   border:1px solid #ccc;
   border-radius:3px;
+  color:${({theme})=>theme.text};
+
 
 `
 
 const Input = styled.input`
   outline:none;
   width:100%;
-  color:${({theme})=>theme.text};
   font-family: roboto;
   background-color:transparent;
   border:none;
-
+  color:${({theme})=>theme.text};
 `
 const Button = styled.button`
   padding:4px 12px;
@@ -87,6 +90,12 @@ const Avatar = styled.img`
 export default function Navbar() {
   const currentUser = useSelector((store)=>store.user.currentUser);
 
+  const dispatch = useDispatch();
+  const logOut = async(e)=>{
+    await apiRequest.post("/auth/logout")
+    dispatch(logout());
+    window.location.reload();
+  }
 
 
   return (
@@ -101,7 +110,9 @@ export default function Navbar() {
             <VideoCallIcon/>
             <Avatar/>
             {currentUser.name}
+            <p onClick={logOut}>Logout</p>
           </User>
+
 
         ):
         <Link to="/login" style={{textDecoration:"none"}}>
