@@ -94,7 +94,7 @@ export default function Navbar() {
   const logOut = async(e)=>{
     await apiRequest.post("/auth/logout")
     dispatch(logout());
-    window.location.reload();
+    // window.location.reload();
   }
 
 
