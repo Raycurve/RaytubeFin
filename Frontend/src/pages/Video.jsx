@@ -14,6 +14,7 @@ import { useLocation } from 'react-router-dom';
 import apiRequest from '../lib/apiRequest';
 import { dislike, fetchFailure, fetchStart, fetchSuccess, like } from '../redux/videoSlice';
 import { format } from 'timeago.js';
+import { subscription } from '../redux/userSlice';
 
 
 
@@ -136,6 +137,8 @@ export default function Video() {
         setChannel(channelRes.data);
         // setVideo(videoRes.data);
         dispatch(fetchSuccess(videoRes.data));
+        // console.log(currentVideo);
+        
         
       }
       catch(err){ dispatch(fetchFailure())}
@@ -153,6 +156,15 @@ export default function Video() {
     await apiRequest.put(`/users/dislike/${currentVideo._id}`);
     dispatch(dislike(currentUser._id));
 
+  }
+  const handleSub = async()=>{
+    currentUser.subscriberChannels?.includes(currentVideo.userId)
+    ?
+    await apiRequest.put(`/users/unsub/${currentVideo.userId}`)
+    :
+    await apiRequest.put(`/users/sub/${currentVideo.userId}`)
+
+    dispatch(subscription(currentVideo.userId));
   }
 
   return (
@@ -193,7 +205,7 @@ export default function Video() {
               <Description>{currentVideo.desc}</Description>
             </ChannelDetails>
           </ChannelInfo>
-          <SubsButt>SUBSCRIBE</SubsButt>
+          <SubsButt onClick={handleSub}>{currentUser.subscriberChannels?.includes(currentVideo.userId)?"SUBSCRIBED":"SUBSCRIBE"}</SubsButt>
         </Channel>
         <Hr/>
         {/*comments*/}
