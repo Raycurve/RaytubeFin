@@ -1,12 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import ThumbUpIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbDownIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbUpIconOutline from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDownAlt';
+import ThumbDownOffOutline from '@mui/icons-material/ThumbDownOffAlt';
 import ReplyIcon from '@mui/icons-material/Reply';
 import BookmarkIcon from '@mui/icons-material/BookmarkBorder';
 import pfp from '../imgs/pfp.webp';
 import Comments from '../components/Comments';
 import Card from '../components/Card';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import apiRequest from '../lib/apiRequest';
+import { dislike, fetchFailure, fetchStart, fetchSuccess, like } from '../redux/videoSlice';
+import { format } from 'timeago.js';
 
 
 
@@ -107,20 +114,61 @@ const SubsButt = styled.button`
   cursor:pointer;
 `
 export default function Video() {
+
+  const currentUser = useSelector((state)=>state.user.currentUser)||{};
+  const currentVideo = useSelector((state)=>state.video.currentVideo)||{};
+  const dispatch =useDispatch();
+  
+  const path = useLocation().pathname.split("/")[2];
+  console.log(path);
+  // console.log(currentVideo);
+  
+  // const [video,setVideo] = useState({});
+  const [channel,setChannel] = useState({});
+
+  useEffect(()=>{
+    const fetchData = async ()=>{
+      try{
+        dispatch(fetchStart());
+        const videoRes = await apiRequest(`/videos/find/${path}`);
+        const channelRes = await apiRequest(`/users/find/${videoRes.data.userId}`);
+
+        setChannel(channelRes.data);
+        // setVideo(videoRes.data);
+        dispatch(fetchSuccess(videoRes.data));
+        
+      }
+      catch(err){ dispatch(fetchFailure())}
+    }
+    fetchData();
+
+  },[path,dispatch])
+
+
+  const handleLike = async()=>{
+    await apiRequest.put(`/users/like/${currentVideo._id}`);
+    dispatch(like(currentUser._id));
+  }
+  const handleDislike = async()=>{
+    await apiRequest.put(`/users/dislike/${currentVideo._id}`);
+    dispatch(dislike(currentUser._id));
+
+  }
+
   return (
     <Container>
       <Content>
         <VideoWrapper><iframe width="880" height="495" src="https://www.youtube.com/embed/Vitf8YaVXhc" title="I never understood why you can&#39;t go faster than light - until now!" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe></VideoWrapper>
-        <Title>Test video</Title>
+        <Title>{currentVideo.title}</Title>
         <Details>
-          <Info>400,348 views • 2 days ago</Info>
+          <Info>{currentVideo.views} views • {format(currentVideo.createdAt)}</Info>
           <Buttons>
-            <Button>
-              <ThumbUpIcon/>
-              Like
+            <Button onClick={handleLike}>
+              {currentVideo.likes?.includes(currentUser._id)?<ThumbUpIcon/>:<ThumbUpIconOutline/>}
+              {currentVideo.likes?.length}
             </Button>
-            <Button>
-              <ThumbDownIcon/>
+            <Button onClick={handleDislike}>
+              {currentVideo.dislikes?.includes(currentUser._id)?<ThumbDownIcon/>:<ThumbDownOffOutline/>}
               Dislike
             </Button>
             <Button>
@@ -138,11 +186,11 @@ export default function Video() {
         {/*channel details*/}
         <Channel>  
           <ChannelInfo>
-            <Img src = {pfp}/>
+            <Img src = {channel.img}/>
             <ChannelDetails>
-              <ChannelName>Raycurve</ChannelName>
-              <ChannelCounter>400K subscribers</ChannelCounter>
-              <Description>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel id voluptate tempore voluptatum ipsa vero aliquid! Dignissimos, obcaecati. Veniam sunt commodi nesciunt magnam beatae. Eligendi amet aut porro. Autem, unde!</Description>
+              <ChannelName>{channel.name}</ChannelName>
+              <ChannelCounter>{channel.subscribers} subscribers</ChannelCounter>
+              <Description>{currentVideo.desc}</Description>
             </ChannelDetails>
           </ChannelInfo>
           <SubsButt>SUBSCRIBE</SubsButt>
@@ -154,7 +202,7 @@ export default function Video() {
         </Comments>
       </Content>
 
-      <Recom>
+      {/* <Recom>
         <Card type="sm"/>
         <Card type="sm"/>
         <Card type="sm"/>
@@ -170,7 +218,7 @@ export default function Video() {
         <Card type="sm"/>
         <Card type="sm"/>
         <Card type="sm"/>
-      </Recom>
+      </Recom> */}
     </Container>
   )
 }

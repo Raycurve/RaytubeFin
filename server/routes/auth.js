@@ -6,7 +6,8 @@ const router = express.Router();
 
 router.get("/test", test);  
 
-router.post("/logout",verifyToken, logout);
+// router.post("/logout",verifyToken, logout);
+router.post("/logout", logout);
 
 //create a user
 router.post("/signup", signup);
