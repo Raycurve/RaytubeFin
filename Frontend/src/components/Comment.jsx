@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import pfp from '../imgs/lion.png'
+import apiRequest from '../lib/apiRequest'
+import { Button } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { format } from 'timeago.js'
 
 
 const Container = styled.div`
     display:flex;
     gap:8px;
     margin:25px 0px;
+
 
 `
 const Avatar = styled.img`
@@ -34,15 +39,47 @@ const Date = styled.span`
 const Text = styled.span`
     font-size:14px;
 `
-export default function Comment() {
+
+const CommentWrap = styled.div`
+    width:100%;
+    display:flex;
+    justify-content: space-between;
+`
+export default function Comment({comment}) {
+    const [channel,setChannel] = useState({});
+    const currentUser = useSelector((state)=>state.user.currentUser)||{};
+
+    const handleDelete = async()=>{
+        try{
+            // console.log(comment);
+            await apiRequest.delete(`/comments/${comment._id}`);
+            setChannel({});
+        }
+        catch(err){}
+    }
+
+    useEffect(()=>{
+        const fetchComment = async() =>{
+            const res = await apiRequest(`/users/find/${comment.userId}`);
+            setChannel(res.data);
+        };
+        fetchComment();
+    },[comment.userId])
+
+
+
   return (
     <Container>
-        <Avatar src={pfp}/>
-        <Details>
-            <Name>SeldomNoob<Date>4 Days ago</Date></Name>
-            
-            <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit atque neque architecto, amet aliquam illo at numquam quidem provident fugiat. Quas dolore in nam necessitatibus itaque, magnam quo cupiditate consequatur!</Text>
-        </Details>
+        <Avatar src={channel.img}/>
+        <CommentWrap>
+
+            <Details>
+                <Name>{channel.name}<Date>{format(comment.createdAt)}</Date></Name>
+                
+                <Text>{comment.desc}</Text>
+            </Details>
+            {(currentUser._id == comment.userId) &&<Button onClick={handleDelete}>Delete</Button>}
+        </CommentWrap>
     </Container>
   )
 }

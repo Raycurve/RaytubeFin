@@ -114,6 +114,13 @@ const SubsButt = styled.button`
   padding:8px 16px;
   cursor:pointer;
 `
+
+const VideoFrame = styled.video`
+  max-height:720px;
+  width:100%;
+  object-fit:cover;
+`
+
 export default function Video() {
 
   const currentUser = useSelector((state)=>state.user.currentUser)||{};
@@ -121,7 +128,7 @@ export default function Video() {
   const dispatch =useDispatch();
   
   const path = useLocation().pathname.split("/")[2];
-  console.log(path);
+  // console.log(path);
   // console.log(currentVideo);
   
   // const [video,setVideo] = useState({});
@@ -170,7 +177,9 @@ export default function Video() {
   return (
     <Container>
       <Content>
-        <VideoWrapper><iframe width="880" height="495" src="https://www.youtube.com/embed/Vitf8YaVXhc" title="I never understood why you can&#39;t go faster than light - until now!" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe></VideoWrapper>
+        <VideoWrapper>
+          <VideoFrame src={currentVideo.videoUrl}/>
+        </VideoWrapper>
         <Title>{currentVideo.title}</Title>
         <Details>
           <Info>{currentVideo.views} views • {format(currentVideo.createdAt)}</Info>
@@ -209,7 +218,7 @@ export default function Video() {
         </Channel>
         <Hr/>
         {/*comments*/}
-        <Comments>
+        <Comments videoId = {currentVideo._id}>
           comments
         </Comments>
       </Content>
