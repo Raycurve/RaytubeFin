@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import apiRequest from '../lib/apiRequest'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loginFailure, loginStart, loginSuccess } from '../redux/userSlice'
 import {auth , provider} from "../firebase.js";
 import { signInWithPopup } from 'firebase/auth';
+import { Link } from 'react-router-dom'
+
 
 const Container = styled.div`
     display:flex;
@@ -54,7 +56,7 @@ const Links = styled.div`
     margin-left:40px;
 `
 
-const Link = styled.span`
+const Linke = styled.span`
     margin-left:30px;
 `
 
@@ -69,18 +71,21 @@ const Wrapper = styled.div`
 `
 export default function Login() {
     const [name,setName] = useState("");
+    const [nameS,setNameS] = useState("");
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
+    const [passwordS,setPasswordS] = useState("");
 
+    const currentUser = useSelector((state)=>state.user.currentUser);
     //dispatchers
     const dispatch = useDispatch();
 
 
     const handleLogin = async(e)=>{
-        e.preventDefault();
+        // e.preventDefault();
         dispatch(loginStart());
         try{
-            const res = await apiRequest.post("/auth/signin/",{name,password});
+            const res = await apiRequest.post("/auth/signin/",{name :nameS,password: passwordS});
             dispatch(loginSuccess(res.data));
 
             console.log(res.data);
@@ -113,29 +118,48 @@ export default function Login() {
         })
     }
 
+    const handleSignUp= async (e)=>{
+        // e.preventDefault();
+        try{
+            const res = await apiRequest.post("/auth/signup/",{name,email,password});
+
+            console.log(res.data);
+            console.log("SIgnUp success!");
+            setName(""); setEmail(""); setPassword("");
+            
+        }
+        catch(err){
+            console.log("Error while Signing Up!");
+             
+        }
+    }
+
   return (
     <Container>
         <Wrapper>
+
             <Title>Sign in</Title>
             <SubTitle>to continue to RayTube</SubTitle>
-            <Input placeholder='username' onChange={e=>setName(e.target.value)}/>
-            <Input type='password' placeholder='password' onChange={e=>setPassword(e.target.value)}/>
-            <Button onClick={handleLogin}>Sign in</Button>
+            <Input placeholder='username' onChange={e=>setNameS(e.target.value)}/>
+            <Input type='password' placeholder='password' onChange={e=>setPasswordS(e.target.value)}/>
+            <Link to="/trends" style={{textDecoration:"none"}}>
+                <Button onClick={handleLogin}>Sign in</Button>
+            </Link>
 
             <Title>or</Title>
             <Button onClick={signInWithGoogle}>SignIn with Google</Button>
             <Title>or</Title>
-            <Input placeholder='username' onChange={e=>setName(e.target.value)}/>
-            <Input placeholder='email'onChange={e=>setEmail(e.target.value)}/>
-            <Input type='password' placeholder='password' onChange={e=>setPassword(e.target.value)}/>
-            <Button>Sign up</Button>
+            <Input placeholder='username' value={name} onChange={e=>setName(e.target.value)}/>
+            <Input placeholder='email' value={email} onChange={e=>setEmail(e.target.value)}/>
+            <Input type='password' placeholder='password'value={password} onChange={e=>setPassword(e.target.value)}/>
+            <Button onClick={handleSignUp}>Sign up</Button>
         </Wrapper>
         <More>
             English (USA)
             <Links>
-                <Link>Help</Link>
-                <Link>Privacy</Link>
-                <Link>Terms</Link>
+                <Linke>Help</Linke>
+                <Linke>Privacy</Linke>
+                <Linke>Terms</Linke>
             </Links>
         </More>
     </Container>

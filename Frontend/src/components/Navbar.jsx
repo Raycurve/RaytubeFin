@@ -110,7 +110,7 @@ export default function Navbar() {
             <VideoCallIcon/>
             <Avatar src={currentUser.img}/>
             {currentUser.name}
-            <p onClick={logOut}>Logout</p>
+            <p style={{cursor:"pointer"}} onClick={logOut}>Logout</p>
           </User>
 
 
