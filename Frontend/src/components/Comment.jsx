@@ -45,7 +45,7 @@ const CommentWrap = styled.div`
     display:flex;
     justify-content: space-between;
 `
-export default function Comment({comment}) {
+export default function Comment({comment, onDelete}) {
     const [channel,setChannel] = useState({});
     const currentUser = useSelector((state)=>state.user.currentUser)||{};
 
@@ -53,6 +53,7 @@ export default function Comment({comment}) {
         try{
             // console.log(comment);
             await apiRequest.delete(`/comments/${comment._id}`);
+            onDelete();
             setChannel({});
         }
         catch(err){}

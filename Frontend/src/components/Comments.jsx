@@ -4,6 +4,7 @@ import pfp from '../imgs/pfp.webp'
 import Comment from './Comment'
 import apiRequest from '../lib/apiRequest'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 const Container = styled.div`
     font-family:roboto;
 `
@@ -41,10 +42,10 @@ export default function Comments({videoId}) {
     const [desc,setDesc] = useState("");
     
     
-    
     const addComment = async(e)=>{
         e.preventDefault();
         try{
+            if (!desc.trim()) return; // Prevent empty comments
             const res = await apiRequest.post("/comments/",{desc,videoId});
             setComments([res.data, ...comments]);
             // console.log(res.data);
@@ -55,6 +56,10 @@ export default function Comments({videoId}) {
         
     };
     
+    const handleDeleteComment = (commentId) => {
+        setComments((prevComments) => prevComments.filter((c) => c._id !== commentId));
+    };
+
     useEffect(()=>{
         const fetchComments = async()=>{
             try{
@@ -72,11 +77,21 @@ export default function Comments({videoId}) {
     <Container>
         <NewCom>
             <Avatar src={currentUser.img}/>
-            <Input placeholder='Add a comment...' onChange={e=>setDesc(e.target.value)}/>
-            <Button onClick={addComment}> + </Button>
+            <Input  placeholder="Add a comment..." value={desc}  onChange={e=>setDesc(e.target.value)}/>
+            {
+                (currentUser._id)?
+                (
+                <Button onClick={addComment}> + </Button>):(
+
+                <Link to="/login" style={{textDecoration:"none"}}>
+                    <Button  style={{width:"60px"}}> Sign In </Button>
+                </Link>
+                )
+
+            }
         </NewCom>   
         {comments.map((comment)=>{
-            return <Comment key = {comment._id} comment={comment}/>
+            return <Comment key = {comment._id} comment={comment} onDelete={()=>handleDeleteComment(comment._id)}/>
         })}
         {/* <Comment/> */}
        
