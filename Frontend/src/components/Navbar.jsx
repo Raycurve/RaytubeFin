@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { current } from '@reduxjs/toolkit';
 import { logout } from '../redux/userSlice';
 import apiRequest from '../lib/apiRequest';
+import Upload from './Upload';
 
 
 const Container = styled.div`
@@ -90,6 +91,11 @@ const Avatar = styled.img`
 export default function Navbar() {
   const currentUser = useSelector((store)=>store.user.currentUser);
 
+  //add vid
+  const [open ,setOpen] = useState(false);
+
+
+
   const dispatch = useDispatch();
   const logOut = async(e)=>{
     await apiRequest.post("/auth/logout")
@@ -99,28 +105,31 @@ export default function Navbar() {
 
 
   return (
-    <Container>
-      <Wrapper>
-        <Search>
-          <Input placeholder='Search'/> 
-          <SearchIcon/>
-        </Search>
-        {currentUser?(
-          <User>
-            <VideoCallIcon/>
-            <Avatar src={currentUser.img}/>
-            {currentUser.name}
-            <p style={{cursor:"pointer"}} onClick={logOut}>Logout</p>
-          </User>
+    <>
+      <Container>
+        <Wrapper>
+          <Search>
+            <Input placeholder='Search'/> 
+            <SearchIcon/>
+          </Search>
+          {currentUser?(
+            <User>
+              <VideoCallIcon style={{cursor:"pointer"}} onClick={()=>setOpen(true)}/>
+              <Avatar src={currentUser.img}/>
+              {currentUser.name}
+              <p style={{cursor:"pointer"}} onClick={logOut}>Logout</p>
+            </User>
 
 
-        ):
-        <Link to="/login" style={{textDecoration:"none"}}>
-          <Button><AccountCircleIcon/> SIGN IN</Button>
-          </Link>
-        }
+          ):
+          <Link to="/login" style={{textDecoration:"none"}}>
+            <Button><AccountCircleIcon/> SIGN IN</Button>
+            </Link>
+          }
 
-      </Wrapper>
-    </Container>
+        </Wrapper>
+      </Container>
+      {open && <Upload setOpen= {setOpen}/>}
+    </>
   )
 }
