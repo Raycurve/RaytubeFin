@@ -73,6 +73,10 @@ font-size:14px;
 `
 
 export default function Upload({setOpen}) {
+
+
+
+    
   return (
     <Container>
         <Wrapper>

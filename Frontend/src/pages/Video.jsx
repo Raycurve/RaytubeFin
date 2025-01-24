@@ -141,6 +141,9 @@ export default function Video() {
         const videoRes = await apiRequest(`/videos/find/${path}`);
         const channelRes = await apiRequest(`/users/find/${videoRes.data.userId}`);
 
+        const addView = await apiRequest.put(`/videos/view/${path}`);
+        console.log(addView);
+        
         setChannel(channelRes.data);
         // setVideo(videoRes.data);
         dispatch(fetchSuccess(videoRes.data));
@@ -151,7 +154,7 @@ export default function Video() {
       catch(err){ dispatch(fetchFailure())}
     }
     fetchData();
-
+    
   },[path,dispatch])
 
 
