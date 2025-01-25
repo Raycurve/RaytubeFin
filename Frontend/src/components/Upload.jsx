@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
 import styled from 'styled-components'
+import apiRequest from '../lib/apiRequest';
+import { useNavigate } from 'react-router-dom';
 
 
 const Container = styled.div`
@@ -13,7 +15,7 @@ const Container = styled.div`
     display:flex;
     align-items:center;
     justify-content: center;
-
+    
 `
 const Wrapper = styled.div`
     width: 480px;
@@ -25,7 +27,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     gap:16px;
     position:relative; 
-
+    z-index:2;
 
 `
 const Close = styled.div`
@@ -74,28 +76,42 @@ font-size:14px;
 
 export default function Upload({setOpen}) {
 
-
-
+    const [img,setImg] = useState("");
+    const [video,setVideo] = useState("");
+    const [title,setTitle] = useState("");
+    const [desc,setDesc] = useState("");
+    const [tags,setTags] = useState([]);
     
-  return (
-    <Container>
-        <Wrapper>
-            <Close onClick={()=>setOpen(false)}>
-                <CloseIcon/>
-            </Close>
-            <Title>Upload a New Video</Title>
 
-            <Label>Video: </Label>
-            <Input type='file' accept='video/*'/>
-            <Input type='text' placeholder='Title'/>
-            <Desc  placeholder='Description' rows={8}/>
-            <Input type='text' placeholder='Video tags separated with commas. '/>
+    const navigate = useNavigate();
+    const handleUpload = async(e)=>{
+        e.preventDefault();
+        const res = await apiRequest.post("/videos",{title,desc,imgUrl:img,videoUrl:video,tags});
+        setOpen(false);
 
-            <Label>Thumbnail: </Label>
-            <Input type='file' accept='image/*'/>
-            <Button>Upload</Button>
+        res.status ===200 && navigate(`/video/${res.data._id}`)
+        console.log("upload success");
+        
+    }   
+    return (
+        <Container>
+            <Wrapper>
+                <Close onClick={()=>setOpen(false)}>
+                    <CloseIcon/>
+                </Close>
+                <Title>Upload a New Video</Title>
 
-        </Wrapper>
-    </Container>
-  )
+                <Label>Video: </Label>
+                <Input type='text' placeholder='Enter video URL' onChange={e=>setVideo(e.target.value)} />
+                <Input type='text' placeholder='Title' onChange={e=>setTitle(e.target.value)}/>
+                <Desc  placeholder='Description' rows={8} onChange={e=>setDesc(e.target.value)}/>
+                <Input type='text' placeholder='Video tags separated with commas. ' onChange={e=>setTags(e.target.value.split(","))}/>
+
+                <Label>Thumbnail: </Label>
+                <Input type='text' placeholder='Enter image URL'  onChange={e=>setImg(e.target.value)}/>
+                <Button onClick={handleUpload}>Upload</Button>
+
+            </Wrapper>
+        </Container>
+    )
 }

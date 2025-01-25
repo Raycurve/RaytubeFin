@@ -76,7 +76,7 @@ export default function Card({type, video}) {
     <Link to={`/video/${video._id}`} style={{textDecoration:"none"}}>
     
       <Container type = {type}>
-        <Image type={type} src={srrc}/>
+        <Image type={type} src={video.imgUrl!="test"?video.imgUrl:srrc}/>
         <Details type = {type}>
           <ChannelImg type={type} src={channel.img}/>
           <Texts>

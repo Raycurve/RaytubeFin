@@ -30,8 +30,6 @@ const Content = styled.div`
   // background-color:red;
 `
 
-const VideoWrapper = styled.div`
-`
 
 const Title = styled.h1`
   font-size:14px;
@@ -115,11 +113,25 @@ const SubsButt = styled.button`
   cursor:pointer;
 `
 
-const VideoFrame = styled.video`
-  max-height:720px;
-  width:100%;
-  object-fit:cover;
-`
+// const VideoFrame = styled.video`
+//   max-height:720px;
+//   width:100%;
+//   object-fit:cover;
+// `
+const VideoWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* Aspect ratio: 16:9 */
+`;
+
+const VideoFrame = styled.iframe`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
 
 export default function Video() {
 
@@ -142,7 +154,7 @@ export default function Video() {
         const channelRes = await apiRequest(`/users/find/${videoRes.data.userId}`);
 
         const addView = await apiRequest.put(`/videos/view/${path}`);
-        console.log(addView);
+        // console.log(addView);
         
         setChannel(channelRes.data);
         // setVideo(videoRes.data);
@@ -181,7 +193,8 @@ export default function Video() {
     <Container>
       <Content>
         <VideoWrapper>
-          <VideoFrame src={currentVideo.videoUrl}/>
+          <VideoFrame 
+          src={currentVideo?`https://www.youtube.com/embed/${currentVideo.videoUrl.split("v=")[1]}`:`https://www.youtube.com/embed/F7iLfuci75Y`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></VideoFrame>
         </VideoWrapper>
         <Title>{currentVideo.title}</Title>
         <Details>

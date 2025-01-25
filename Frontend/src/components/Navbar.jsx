@@ -18,6 +18,7 @@ const Container = styled.div`
   background-color: ${({theme})=>theme.bgLighter};
   height:45px;
   padding-right:40px;
+  z-index:5;
 `
 const Wrapper = styled.div`
   display:flex;
