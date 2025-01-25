@@ -13,14 +13,13 @@ export default function Recommendations({tags}) {
     useEffect(()=>{
         const fetchVids = async ()=>{
             const res = await apiRequest.get(`/videos/tags?tags=${tags}`);
-            console.log(`/videos/tags?tags=${tags}`);
-            console.log(res);
+            // console.log(`/videos/tags?tags=${tags}`);
+            // console.log(res);
             
             setVideos(res.data);
         }
         fetchVids();
 
-        console.log(videos);
         
     },[tags])
     return (

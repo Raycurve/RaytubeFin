@@ -5,16 +5,18 @@ import {getAuth, GoogleAuthProvider} from "firebase/auth";
 
 //todo add these keys in .env later
 const firebaseConfig = {
-  apiKey: "AIzaSyAb7u7wzVgYn1t2_r_BtnYA6WkXhMpgSjU",
-  authDomain: "raytubeauth.firebaseapp.com",
-  projectId: "raytubeauth",
-  storageBucket: "raytubeauth.firebasestorage.app",
-  messagingSenderId: "928287436632",
-  appId: "1:928287436632:web:38abae413019357db4bf2d"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+
 
 export const auth  = getAuth();
 export const provider = new GoogleAuthProvider();
