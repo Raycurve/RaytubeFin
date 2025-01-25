@@ -15,6 +15,7 @@ import apiRequest from '../lib/apiRequest';
 import { dislike, fetchFailure, fetchStart, fetchSuccess, like } from '../redux/videoSlice';
 import { format } from 'timeago.js';
 import { subscription } from '../redux/userSlice';
+import Recommendations from '../components/Recommendations';
 
 
 
@@ -239,23 +240,7 @@ export default function Video() {
         </Comments>
       </Content>
 
-      {/* <Recom>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-      </Recom> */}
+     <Recommendations tags = {currentVideo.tags}/>
     </Container>
   )
 }
