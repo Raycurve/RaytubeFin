@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import '@fontsource/roboto/500.css';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { current } from '@reduxjs/toolkit';
 import { logout } from '../redux/userSlice';
@@ -94,8 +94,9 @@ export default function Navbar() {
 
   //add vid
   const [open ,setOpen] = useState(false);
+  const [q,setQ] = useState("");
 
-
+  const navigate = useNavigate()
 
   const dispatch = useDispatch();
   const logOut = async(e)=>{
@@ -110,8 +111,8 @@ export default function Navbar() {
       <Container>
         <Wrapper>
           <Search>
-            <Input placeholder='Search'/> 
-            <SearchIcon/>
+            <Input placeholder='Search' onChange={e=>setQ(e.target.value)}/> 
+            <SearchIcon onClick={()=>navigate(`/search?q=${q}`)}/>
           </Search>
           {currentUser?(
             <User>

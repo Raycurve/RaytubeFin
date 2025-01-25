@@ -15,6 +15,7 @@ import {
 import Home from "./pages/Home";
 import Video from "./pages/Video";
 import Login from "./pages/Login";
+import Search from "./pages/Search";
 
 const GlobalStyle = createGlobalStyle`
   /* Hide scrollbar globally while keeping scroll functionality */
@@ -62,6 +63,7 @@ function App() {
                   <Route index element={<Home type="random"/>}/>
                   <Route path="trends" element={<Home type="trend"/>}/>
                   <Route path="subscriptions" element={<Home type="sub"/>}/>
+                  <Route path="search" element={<Search/>}/>
 
 
 

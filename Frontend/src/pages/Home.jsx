@@ -7,7 +7,8 @@ import { store } from '../redux/store.js'
 const Container = styled.div`
     padding:20px  50px;
     display:flex;
-    justify-content: space-between;
+    // justify-content: space-between;
+    gap:9px;
     flex-wrap:wrap;
 `
 
